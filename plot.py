@@ -18,7 +18,7 @@ from sklearn.linear_model import LinearRegression
 from utils import *
 
 
-def plot_degree_dist(G,x):
+def plot_degree_dist(G):
     degrees = [G.degree(n) for n in G.nodes()]
     #print(degrees)
     
@@ -44,7 +44,7 @@ def plot_degree_dist(G,x):
     
    
 
-def plot_degree_dist_cauchy(G,x):
+def plot_degree_dist_cauchy(G):
     
     
     
@@ -81,7 +81,7 @@ def plot_degree_dist_cauchy(G,x):
     #print('beta= ',fit.power_law.alpha,'  sigma= ',fit.power_law.sigma)
 
 
-def plot_degree_dist_lognorm(G,x):
+def plot_degree_dist_lognorm(G):
     
     
     
@@ -110,7 +110,7 @@ def plot_degree_dist_lognorm(G,x):
     
    
     
-def laplacian_distrubution(G,x):
+def laplacian_distrubution(G):
  
     #L=nx.laplacian_matrix(G)
     L=nx.normalized_laplacian_matrix(G)
@@ -144,7 +144,7 @@ def laplacian_distrubution(G,x):
     #plt.xlim(xmin=0, xmax=20)
     
     
-def laplacian_distrubution_cauchy(G,x):
+def laplacian_distrubution_cauchy(G):
     
     #L=nx.laplacian_matrix(G)
     L=nx.normalized_laplacian_matrix(G)
@@ -175,7 +175,7 @@ def laplacian_distrubution_cauchy(G,x):
     
    
 
-def laplacian_distrubution_lognorm(G,x):
+def laplacian_distrubution_lognorm(G):
     
     #L=nx.laplacian_matrix(G)
     L=nx.normalized_laplacian_matrix(G)
@@ -312,7 +312,7 @@ def plot_all_dist(G):
     plt.xlabel('k/<k>')
     
 
-def plot_cdf(G):
+def plot_ccdf(G):
     
     degrees = [G.degree(n) for n in G.nodes()]
     kmean=Average_degree(G)
@@ -320,8 +320,8 @@ def plot_cdf(G):
     heights,bins=np.histogram(l,bins=200)
     pk=heights/np.sum(heights)
     x=np.linspace(0, np.amax(l),num=len(heights))
-    cdf=1-np.cumsum(pk)
-    plt.scatter(x,cdf)
+    ccdf=1-np.cumsum(pk)
+    plt.scatter(x,ccdf)
     plt.xscale('log')
     plt.yscale('log')
     plt.ylim(bottom=10**(-4),top=1)

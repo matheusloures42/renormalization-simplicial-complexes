@@ -55,3 +55,21 @@ class CliqueComplex:
            
             bn=dim_kerBn
         return(bn)
+    
+    def number_of_simplices(self,n):
+       
+        c=list(nx.enumerate_all_cliques(self.G))
+        #print(c)
+       
+        count=0
+        ind=0
+        for j in range(len(c)): 
+            if len(c[j])==n+1:   
+                #print(c[j])
+                ind=1
+                count+=1
+          
+        if ind==0:  
+            print('there is no maximal simplex with dimension=',n )
+           
+        return count

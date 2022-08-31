@@ -1,6 +1,7 @@
 
 import numpy as np
 import networkx as nx
+from numpy.linalg import pinv
 from utils import *
 
 
@@ -46,10 +47,10 @@ def coarse_graining_step(G):
                         list_of_used_nodes.append(int(correlated_nodes_sorted[i][j]))
                         list_of_used_nodes.append(int(correlated_nodes_sorted[i][j-1]))        
     most_correlated_nodes.remove(most_correlated_nodes[0])    
-    #print('\n')
-    #print(most_correlated_nodes)
+    print('\n')
+    print(most_correlated_nodes)
     #print(list_of_used_nodes.sort())
-    #print('\n')
+    print('\n')
     
     print(len(most_correlated_nodes))
 
@@ -60,7 +61,7 @@ def coarse_graining_step(G):
        G = nx.contracted_nodes(G,u,v)
     print(G.number_of_nodes())
     G=nx.convert_node_labels_to_integers(G)
-    return G          
+    return G         
 
 
 def laplacian_renorm(G,number_of_steps):
