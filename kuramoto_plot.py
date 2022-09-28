@@ -18,7 +18,12 @@ class KuramotoPlot:
         self.G=G
         self.n=G.number_of_nodes()
         
-    
+    """
+    nat_freqs= Natural frquencys distribution.
+    cor=color of the plot.
+    number_of_simulation=number of simulations to be averaged.
+
+    """
     def plot_order_param_vs_coupling_avg(self,cor,nat_freqs,number_of_simulations):
         sns.set_style("whitegrid")
         sns.set_context("notebook", font_scale=1.6)

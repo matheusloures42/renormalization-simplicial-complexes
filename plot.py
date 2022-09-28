@@ -17,6 +17,10 @@ from sklearn.linear_model import LinearRegression
 
 from utils import *
 
+"""
+All functions take as input the graph G.
+For the power-law distribution the input x is the starting point of the fitting.
+"""
 
 def plot_degree_dist(G):
     degrees = [G.degree(n) for n in G.nodes()]
@@ -269,7 +273,7 @@ def clustering_distribution_lognorm(G):
     plt.ylabel('Number of clustering coeficients')
     plt.show()
     
-    
+    #Here x
 def plot_degree_dist_power_law(G,x):
    
     degrees = [G.degree(n) for n in G.nodes()]

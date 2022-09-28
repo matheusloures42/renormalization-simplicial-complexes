@@ -5,6 +5,11 @@ from numpy.linalg import pinv
 from utils import *
 
 
+"""
+coarse graining step use G as unput and make one step of renormalization using the pseudo inverse of laplacian.
+
+"""
+
 def coarse_graining_step(G):
     L=nx.laplacian_matrix(G)
     L=L.todense()
@@ -63,11 +68,18 @@ def coarse_graining_step(G):
     G=nx.convert_node_labels_to_integers(G)
     return G         
 
-
+"""
+Laplacian renorm uses G and the number of steps of renormalization that you want as input.
+"""
 def laplacian_renorm(G,number_of_steps):
     for j in range(number_of_steps):
            G=coarse_graining_step(G)
     return G
+
+"""
+tentative of replica,it takes the graph G, the renormalized graph GR and an error. We remove the lees correlated links
+of Gr until it have the  average degree in a neighborhood of the average degree of G defined by the given error.
+"""
 
 def laplacian_replica(G,Gr,error):
     L=nx.laplacian_matrix(G)

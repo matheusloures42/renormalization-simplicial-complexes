@@ -3,12 +3,18 @@ import networkx as nx
 from scipy.linalg import null_space
 from numpy.linalg import eigh,eigvalsh,inv, norm, matrix_rank, pinv
 
+"""
+Define the Clique complex from the graph G
+"""
+
 class CliqueComplex:
     def __init__(self,G):
         self.G=G
+    """
+    Calculate the boundary matrix G of order n
+    """
     
-    
-    def high_order_incidence_matrix(self,n): # A=Adjacency matrix n=incidence order
+    def high_order_incidence_matrix(self,n): 
         
         c=list(nx.enumerate_all_cliques(self.G)) #all cliques in graph G (including faces of higher siplex)
        
@@ -37,7 +43,11 @@ class CliqueComplex:
                             Bn[i,j]=(-1)**(n)
         Bn=Bn.astype('float32') 
         return Bn
-    
+    """
+   betti number  of order n, 
+   ismaxdim= 0 if n is not the maximal dimension of the simplicial complex
+   ismaxdim!=0 if n is not the maximal dimension of the simplicial complex
+    """
     def betti_number(self,n,ismaxdim):
         clique=CliqueComplex(self.G)
         Bn=clique.high_order_incidence_matrix(n)
@@ -55,7 +65,9 @@ class CliqueComplex:
            
             bn=dim_kerBn
         return(bn)
-    
+    """
+   number of simplices of order n
+    """
     def number_of_simplices(self,n):
        
         c=list(nx.enumerate_all_cliques(self.G))
