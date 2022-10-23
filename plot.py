@@ -397,4 +397,34 @@ def plot_nu_regression2(G0,G1,G2):
     print('coef linear=',regressor.intercept_)
     print('coef angular=',regressor.coef_)
 
-
+def eigenvector_centrality_x_kl(G):
+    degrees = [G.degree(n) for n in G.nodes()]
+    kmean=Average_degree(G)
+    s=[]
+    for i in degrees:
+        if i not in s:
+            s.append(i)
+    l=s/kmean
+    
+    d = defaultdict(list)
+    K=0
+    for u in G.nodes():
+       d[G.degree(u)].append(u)
+    cpd=[]
+    
+    centrality_coeff = nx.eigenvector_centrality(G)
+    values= list(centrality_coeff.values())
+    
+    for degree in d:
+        sum=0
+        for index in d[degree]:
+            sum+=values[index]
+     
+        
+        cpd.append(sum/len(d[degree]))
+    plt.scatter(l,cpd)
+    plt.xscale('log')
+    plt.yscale('log')
+    plt.ylabel('eigenvector centrality')
+    plt.xlabel('k/<k>')  
+    

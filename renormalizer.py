@@ -52,19 +52,19 @@ def coarse_graining_step(G):
                         list_of_used_nodes.append(int(correlated_nodes_sorted[i][j]))
                         list_of_used_nodes.append(int(correlated_nodes_sorted[i][j-1]))        
     most_correlated_nodes.remove(most_correlated_nodes[0])    
-    print('\n')
-    print(most_correlated_nodes)
+    #print('\n')
+    #print(most_correlated_nodes)
     #print(list_of_used_nodes.sort())
-    print('\n')
+    #print('\n')
     
-    print(len(most_correlated_nodes))
+    #print(len(most_correlated_nodes))
 
     
     for k in range(len(most_correlated_nodes)):
        u=int(most_correlated_nodes[k][0])
        v=int(most_correlated_nodes[k][1])
        G = nx.contracted_nodes(G,u,v)
-    print(G.number_of_nodes())
+    #print(G.number_of_nodes())
     G=nx.convert_node_labels_to_integers(G)
     return G         
 
@@ -119,3 +119,31 @@ def laplacian_replica(G,Gr,error):
             
         l+=1
     return Gaux2
+
+def average_gamma_barabasi_renorm(N,m,number_of_simulations, number_of_steps, starting_points):
+    gammas_list=[]
+    error_list=[]
+    gamma_renorm_list = [[] for _ in range(number_of_steps)]
+    gamma_average_list=[]
+    
+    for i in range(number_of_simulations):
+        if i>0:
+            G.clear()
+            K.clear()
+        G=nx.barabasi_albert_graph(N,m)
+        K = {}
+        for j in range(number_of_steps):
+            K[j]= laplacian_renorm(G,j+1)
+            gamma_renorm_list[j].append(calculate_gamma(K[j],starting_points[j+1]))
+  
+        degrees = [G.degree(n) for n in G.nodes()]
+        l=degrees
+        fit = powerlaw.Fit(np.array(l),xmin=starting_points[0],discrete=True)
+        gammas_list.append(fit.power_law.alpha)
+    gamma_mean=np.mean(gammas_list)
+    gamma_average_list.append(gamma_mean)
+    
+    for j in range(number_of_steps):
+        gamma_average_list.append(np.mean(gamma_renorm_list[j]))
+    return gamma_average_list
+    
