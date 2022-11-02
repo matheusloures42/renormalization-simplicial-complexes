@@ -296,8 +296,8 @@ def plot_degree_dist_power_law(G,x):
     plt.xlabel('degrees')
     plt.show()
     print('gama= ',fit.power_law.alpha,'  sigma= ',fit.power_law.sigma)
-
-
+    plt.rcParams.update({'font.size': 22})
+    
 def plot_all_dist(G):
     
     degrees = [G.degree(n) for n in G.nodes()]
@@ -310,13 +310,13 @@ def plot_all_dist(G):
     plt.plot(x,pk)
     plt.xscale('log')
     plt.yscale('log')
-    
+    plt.rcParams.update({'font.size': 22})
     
     plt.ylabel('p(k/<k>)')
     plt.xlabel('k/<k>')
     
 
-def plot_ccdf(G):
+def plot_ccdf(G,lb):
     
     degrees = [G.degree(n) for n in G.nodes()]
     kmean=Average_degree(G)
@@ -325,17 +325,18 @@ def plot_ccdf(G):
     pk=heights/np.sum(heights)
     x=np.linspace(0, np.amax(l),num=len(heights))
     ccdf=1-np.cumsum(pk)
-    plt.scatter(x,ccdf)
+    plt.scatter(x,ccdf,label=lb)
     plt.xscale('log')
     plt.yscale('log')
     plt.ylim(bottom=10**(-4),top=1)
-    
+    plt.rcParams.update({'font.size': 22})
+    plt.legend()
     plt.xlim(left=10**(-2),right=10**3)
     plt.ylabel('p(k/<k>)')
     plt.xlabel('k/<k>')
     
 
-def clustering_per_kl(G):
+def clustering_per_kl(G,lb):
     
     
     degrees = [G.degree(n) for n in G.nodes()]
@@ -357,12 +358,14 @@ def clustering_per_kl(G):
         clustering_coeff = nx.clustering(G, d[degree])
         
         cpd.append(sum(clustering_coeff.values())/len(clustering_coeff))
-    plt.scatter(l,cpd)
+    plt.scatter(l,cpd,label=lb)
     plt.xscale('log')
     plt.yscale('log')
     plt.ylabel('c(k/<k>)')
     plt.xlabel('k/<k>')
-    plt.ylim(bottom=10**(-3),top=1)
+    #plt.ylim(bottom=10**(-3),top=1)
+    plt.rcParams.update({'font.size': 15})
+    plt.legend()
     
     plt.xlim(left=10**(-2),right=10**2)
 
@@ -397,7 +400,7 @@ def plot_nu_regression2(G0,G1,G2):
     print('coef linear=',regressor.intercept_)
     print('coef angular=',regressor.coef_)
 
-def eigenvector_centrality_x_kl(G):
+def eigenvector_centrality_x_kl(G,lb):
     degrees = [G.degree(n) for n in G.nodes()]
     kmean=Average_degree(G)
     s=[]
@@ -422,9 +425,9 @@ def eigenvector_centrality_x_kl(G):
      
         
         cpd.append(sum/len(d[degree]))
-    plt.scatter(l,cpd)
+    plt.scatter(l,cpd,label=lb)
     plt.xscale('log')
     plt.yscale('log')
     plt.ylabel('eigenvector centrality')
     plt.xlabel('k/<k>')  
-    
+    plt.legend()
