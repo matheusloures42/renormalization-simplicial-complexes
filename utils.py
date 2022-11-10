@@ -44,3 +44,8 @@ def calculate_gamma(G,starting_point):
         l=degrees
         fit = powerlaw.Fit(np.array(l),xmin=starting_point,discrete=True)
         return  fit.power_law.alpha
+    
+def Average_degree_weighted(G):
+    degrees = [G.degree(n,weight='weight') for n in G.nodes()]
+    mean=np.mean(degrees)
+    return mean

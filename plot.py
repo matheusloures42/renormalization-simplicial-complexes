@@ -431,3 +431,87 @@ def eigenvector_centrality_x_kl(G,lb):
     plt.ylabel('eigenvector centrality')
     plt.xlabel('k/<k>')  
     plt.legend()
+
+def plot_ccdf_weighted(G,lb):
+    
+    degrees = [G.degree(n,weight='weight') for n in G.nodes()]
+    kmean=Average_degree_weighted(G)
+    l=degrees/kmean
+    heights,bins=np.histogram(l,bins=200)
+    pk=heights/np.sum(heights)
+    x=np.linspace(0, np.amax(l),num=len(heights))
+    cdf=1-np.cumsum(pk)
+    plt.scatter(x,cdf,label=lb)
+    plt.xscale('log')
+    plt.yscale('log')
+    plt.ylim(bottom=10**(-4),top=1)
+    plt.legend()
+    plt.xlim(left=10**(-2),right=10**3)
+    plt.ylabel('ccdf')
+    plt.xlabel('s/<s>')
+    
+def clustering_per_sl(G,lb):
+    
+    
+    degrees = [G.degree(n,weight='weight') for n in G.nodes()]
+    kmean=Average_degree_weighted(G)
+    s=[]
+    for i in degrees:
+        if i not in s:
+            s.append(i)
+    l=s/kmean
+   
+
+    d = defaultdict(list)
+    K=0
+    for u in G.nodes():
+       d[G.degree(u,weight='weight')].append(u)
+    cpd=[]
+    for degree in d:
+        K+=1
+        clustering_coeff = nx.clustering(G, d[degree],weight='weight')
+        
+        cpd.append(sum(clustering_coeff.values())/len(clustering_coeff))
+    plt.scatter(l,cpd,label=lb)
+    plt.xscale('log')
+    plt.yscale('log')
+    plt.ylabel('c(s/<s>)')
+    plt.xlabel('s/<s>')
+    #plt.ylim(bottom=10**(-3),top=1)
+    plt.rcParams.update({'font.size': 12})
+    plt.legend()
+    
+    plt.xlim(left=10**(-2),right=10**2)
+
+
+def eigenvector_centrality_x_sl(G,lb):
+    degrees = [G.degree(n,weight='weight') for n in G.nodes()]
+    kmean=Average_degree_weighted(G)
+    s=[]
+    for i in degrees:
+        if i not in s:
+            s.append(i)
+    l=s/kmean
+    
+    d = defaultdict(list)
+    K=0
+    for u in G.nodes():
+       d[G.degree(u,weight='weight')].append(u)
+    cpd=[]
+    
+    centrality_coeff = nx.eigenvector_centrality(G,weight='weight')
+    values= list(centrality_coeff.values())
+    
+    for degree in d:
+        sum=0
+        for index in d[degree]:
+            sum+=values[index]
+     
+        
+        cpd.append(sum/len(d[degree]))
+    plt.scatter(l,cpd,label=lb)
+    plt.xscale('log')
+    plt.yscale('log')
+    plt.ylabel('eigenvector centrality')
+    plt.xlabel('s/<s>')  
+    plt.legend()
