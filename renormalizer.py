@@ -223,3 +223,11 @@ def weighted_coarse_graining_step(G):
     G=nx.convert_node_labels_to_integers(G)
     #print(G.edges().data())
     return G  
+
+
+def weighted_replica(Gr,threshold):
+    for u,v in Gr.edges():
+        
+        if float(Gr[u][v]['weight'])<threshold:
+            Gr.remove_edge(u,v)
+    return Gr   
