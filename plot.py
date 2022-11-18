@@ -358,7 +358,7 @@ def clustering_per_kl(G,lb):
         clustering_coeff = nx.clustering(G, d[degree])
         
         cpd.append(sum(clustering_coeff.values())/len(clustering_coeff))
-    plt.scatter(l,cpd,label=lb)
+    plt.scatter(l,cpd/kmean,label=lb)
     plt.xscale('log')
     plt.yscale('log')
     plt.ylabel('c(k/<k>)')
@@ -515,3 +515,74 @@ def eigenvector_centrality_x_sl(G,lb):
     plt.ylabel('eigenvector centrality')
     plt.xlabel('s/<s>')  
     plt.legend()
+
+
+def k_x_s(G,lb):
+    degreesw = [G.degree(n,weight='weight') for n in G.nodes()]
+    degrees = [G.degree(n) for n in G.nodes()]
+    d = defaultdict(list)
+    k=[]
+    for i in degrees:
+        if i not in k:
+            k.append(i)
+   
+    for u in G.nodes():
+        d[G.degree(u)].append(u)
+    sk=[]
+    for degree in d:
+        sum=0
+        for index in d[degree]:
+            sum+=degreesw[index]
+        sk.append(sum/len(d[degree]))
+    
+    regressor = LinearRegression() 
+    regressor.fit(np.array(k).reshape((-1,1)),np.array(sk) )
+    ypred=regressor.predict(np.array(k).reshape((-1,1)) )
+    plt.scatter(k,sk,label=lb)
+    plt.legend()
+    plt.plot(k,ypred)
+    plt.ylabel('s')
+    plt.xlabel('k')
+    print('coef linear=',regressor.intercept_)
+    print('coef angular=',regressor.coef_)
+    
+def plot_clustering_x_l(G,l):
+    c=nx.average_clustering(G)
+    plt.scatter(c,l,color='b')
+
+
+def plot_avg_path_length_x_l(G,l):
+    L=nx.average_shortest_path_length(G)
+    plt.scatter(L,l, color='red')
+
+
+def average_neighbor_degree_x_kl(G,lb):
+    degrees = [G.degree(n) for n in G.nodes()]
+    kmean=Average_degree(G)
+    ksqrmean=average_degree_square(G)
+    s=[]
+    for i in degrees:
+        if i not in s:
+            s.append(i)
+    l=s/kmean
+    
+    d = defaultdict(list)
+    K=0
+    for u in G.nodes():
+       d[G.degree(u)].append(u)
+    annd=[]
+    for degree in d:
+        K+=1
+        nearest_neighbors_degree = nx.average_neighbor_degree(G, nodes=d[degree])
+        
+        
+        
+        annd.append(sum(nearest_neighbors_degree.values())/len(nearest_neighbors_degree)*(kmean/ksqrmean))
+    
+    plt.scatter(l,annd,label=lb)
+    plt.legend()
+    plt.xscale('log')
+    plt.yscale('log')
+    plt.ylim(bottom=10**(-1),top=10)
+    plt.ylabel('knn,n(k/<k>)')
+    plt.xlabel('k/<k>') 
