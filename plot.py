@@ -14,7 +14,7 @@ from scipy.stats import norm,lognorm,cauchy
 from numpy.linalg import eigh,eigvalsh,inv, norm, matrix_rank, pinv
 from collections import defaultdict
 from sklearn.linear_model import LinearRegression
-
+from matplotlib.colors import LogNorm
 from utils import *
 
 """
@@ -341,6 +341,9 @@ def clustering_per_kl(G,lb):
     
     degrees = [G.degree(n) for n in G.nodes()]
     kmean=Average_degree(G)
+    #ksqrmean=average_degree_square(G)
+    #N=G.number_of_nodes()
+    #norm=(ksqrmean-kmean)**2/(float(N)*kmean**3)
     s=[]
     for i in degrees:
         if i not in s:
@@ -358,7 +361,7 @@ def clustering_per_kl(G,lb):
         clustering_coeff = nx.clustering(G, d[degree])
         
         cpd.append(sum(clustering_coeff.values())/len(clustering_coeff))
-    plt.scatter(l,cpd/kmean,label=lb)
+    plt.scatter(l,cpd,label=lb)
     plt.xscale('log')
     plt.yscale('log')
     plt.ylabel('c(k/<k>)')
@@ -586,3 +589,15 @@ def average_neighbor_degree_x_kl(G,lb):
     plt.ylim(bottom=10**(-1),top=10)
     plt.ylabel('knn,n(k/<k>)')
     plt.xlabel('k/<k>') 
+    
+def heat_map_covariance(G):
+    L=nx.laplacian_matrix(G)
+    L=L.todense()
+    L=np.array(L)
+    r_0=0.01
+    r_0=0.0
+    H=r_0+L
+    C=np.linalg.pinv(H)
+    plt.imshow(C,norm=LogNorm())
+    plt.colorbar()
+    plt.show() 
