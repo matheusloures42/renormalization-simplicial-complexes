@@ -300,17 +300,18 @@ def plot_degree_dist_power_law(G,x):
     print('gama= ',fit.power_law.alpha,'  sigma= ',fit.power_law.sigma)
     #plt.rcParams.update({'font.size': 22})
     
-def plot_all_dist(G):
+def plot_all_dist(G,lb):
     
     degrees = [G.degree(n) for n in G.nodes()]
     kmean=Average_degree(G)
     l=degrees/kmean
-    heights,bins=np.histogram(l,bins=100)
+    heights,bins=np.histogram(l,bins=70)
     pk=heights/np.sum(heights)
     x=np.linspace(0, np.amax(l),num=len(heights))
     plt.style.use(['science','notebook'])
-    plt.scatter(x,pk)
-    plt.plot(x,pk)
+    plt.scatter(x,pk,label=lb)
+    plt.legend()
+    #plt.plot(x,pk)
     plt.xscale('log')
     plt.yscale('log')
     #plt.rcParams.update({'font.size': 22})
@@ -333,7 +334,7 @@ def plot_ccdf(G,lb):
     plt.yscale('log')
     plt.ylim(bottom=10**(-4),top=1)
     plt.legend()
-    plt.xlim(left=10**(-2),right=10**3)
+    plt.xlim(left=10**(-2),right=10**2)
     plt.ylabel('$P_c(k/<k>)$')
     plt.xlabel('$k/<k>$')
     
@@ -368,6 +369,7 @@ def clustering_per_kl(G,lb):
     plt.yscale('log')
     plt.ylabel('$c(k/<k>)$')
     plt.xlabel('$k/<k>$')
+    plt.xlim(left=10**(-1),right=10**1)
     #plt.ylim(bottom=10**(-3),top=1)
     #plt.rcParams.update({'font.size': 15})
     plt.legend()
@@ -399,12 +401,13 @@ def clustering_per_kl_c0(G,lb):
         clustering_coeff = nx.clustering(G, d[degree])
         
         cpd.append(sum(clustering_coeff.values())/len(clustering_coeff)*(1/norm))
+    plt.style.use(['science','notebook'])
     plt.scatter(l,cpd,label=lb)
     plt.xscale('log')
     plt.yscale('log')
     plt.ylabel('$c(k/<k>)/c_0$')
     plt.xlabel('$k/<k>$')
-    #plt.ylim(bottom=10**(-3),top=1)
+    plt.ylim(bottom=10**(-1),top=10)
     #plt.rcParams.update({'font.size': 15})
     plt.legend()
     
