@@ -639,9 +639,12 @@ def heat_map_covariance(G):
     r_0=0.0
     H=r_0+L
     C=np.linalg.pinv(H)
+    
+    for j in range(len(L)):
+        C[j,j]=0
     plt.imshow(C,norm=LogNorm())
     plt.colorbar()
-    plt.show() 
+    
     
 def node_communcability_adjacency(G):
     A=nx.adjacency_matrix(G)
@@ -660,3 +663,85 @@ def node_communcability_laplacian(G):
     plt.imshow(Gpq,norm=LogNorm())
     plt.colorbar()
     plt.show() 
+    
+def average_GD(G,lb):
+    L=nx.laplacian_matrix(G)
+    L=L.todense()
+    L=np.array(L)
+    C=np.linalg.pinv(L)
+    GDavg=[]
+    N=len(C)
+    node_list=list(np.arange(N))
+    
+    for j in range(N):
+        avg=0
+        for i in range(N):
+            if i!=j:
+                avg+= C[i,j]
+        GDavg.append(avg/(N-1))
+        
+    plt.scatter(node_list,GDavg,label=lb)
+    plt.yscale('symlog')
+    plt.xscale('log')
+    #plt.ylim(top=0.005,bottom=-0.005)
+    plt.plot(GDavg)
+    plt.legend()
+    plt.ylabel('$<G^D>$')
+    plt.xlabel('nodes')
+    
+def average_GD_x_kl(G,lb):
+    L=nx.laplacian_matrix(G)
+    L=L.todense()
+    L=np.array(L)
+    C=np.linalg.pinv(L)
+    
+    GDavg=[]
+    N=len(C)
+    node_list=list(np.arange(N))
+    
+    for j in range(N):
+        avg=0
+        for i in range(N):
+            if i!=j:
+                avg+= C[i,j]
+        GDavg.append(avg/(N-1))
+        
+    degrees = [G.degree(n) for n in G.nodes()]
+    kmean=Average_degree(G)
+   
+    s=[]
+    for i in degrees:
+        if i not in s:
+            s.append(i)
+    l=s/kmean     
+    
+    d = defaultdict(list)
+  
+    for u in G.nodes():
+       d[G.degree(u)].append(u)
+    cpd=[]
+    
+    for degree in d:
+        sum=0
+        for index in d[degree]:
+            sum+=GDavg[int(index)]
+        cpd.append(sum/len(d[degree]))
+    plt.scatter(l,cpd,label=lb)
+    #plt.yscale('symlog')
+    plt.xscale('log')
+    plt.ylim(top=0.005,bottom=-0.005)
+    #plt.plot(l,cpd)
+    plt.legend()
+    plt.ylabel('$<G^D>$')
+    plt.xlabel('$k/<k>$')
+
+def heat_map_adjacency(G):
+    A=nx.adjacency_matrix(G)
+    A=A.todense()
+    A=np.array(A)
+    A=A.astype(int)
+    plt.imshow(A,norm=LogNorm())
+    plt.colorbar()
+    
+    #plt.colorbar()
+   
