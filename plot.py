@@ -744,4 +744,356 @@ def heat_map_adjacency(G):
     plt.colorbar()
     
     #plt.colorbar()
+    
+def BA_avg_ccdf(l,lb):
+    list_of_graphs={}
+    for j in range(100):
+        list_of_graphs[j]=nx.read_edgelist('Data/barabasi_data/m5_'+str(l)+'_edgelist_loop_'+str(j)+'.txt')
+        
+    ccdf_avg=0
+    kmeans=[]
+    maxk=[]
+    for j in range(100):
+        degrees=[]
+        degrees = [list_of_graphs[j].degree(n) for n in list_of_graphs[j].nodes()]
+        kmean=Average_degree(list_of_graphs[j])
+        l=degrees/kmean
+        kmeans.append(kmean)
+        maxk.append(np.amax(degrees))
+        heights,bins=np.histogram(l,bins=200)
+        pk=heights/np.sum(heights)
+        
+        ccdf=1-np.cumsum(pk)
+        ccdf_avg+=ccdf/100
+    x=np.linspace(0, np.mean(maxk)/np.mean(kmeans),num=len(heights))
+    plt.style.use(['science','notebook'])
+    plt.scatter(x,ccdf,label=lb)
+    plt.xscale('log')
+    plt.yscale('log')
+    plt.ylim(bottom=10**(-4),top=1)
+    plt.legend()
+    plt.xlim(left=10**(-2),right=10**2)
+    plt.ylabel('$P_c(k/<k>)$')
+    plt.xlabel('$k/<k>$')
+    
+def ER_avg_ccdf(l,lb):
+    list_of_graphs={}
+    for j in range(100):
+        list_of_graphs[j]=nx.read_edgelist('Data/erdos_data/p01_'+str(l)+'_edgelist_loop_'+str(j)+'.txt')
+        
+    ccdf_avg=0
+    kmeans=[]
+    maxk=[]
+    for j in range(100):
+        degrees=[]
+        degrees = [list_of_graphs[j].degree(n) for n in list_of_graphs[j].nodes()]
+        kmean=Average_degree(list_of_graphs[j])
+        l=degrees/kmean
+        kmeans.append(kmean)
+        maxk.append(np.amax(degrees))
+        heights,bins=np.histogram(l,bins=200)
+        pk=heights/np.sum(heights)
+        
+        ccdf=1-np.cumsum(pk)
+        ccdf_avg+=ccdf/100
+    x=np.linspace(0, np.mean(maxk)/np.mean(kmeans),num=len(heights))
+    plt.style.use(['science','notebook'])
+    plt.scatter(x,ccdf,label=lb)
+    plt.xscale('log')
+    plt.yscale('log')
+    plt.ylim(bottom=10**(-4),top=1)
+    plt.legend()
+    plt.xlim(left=10**(-2),right=10**2)
+    plt.ylabel('$P_c(k/<k>)$')
+    plt.xlabel('$k/<k>$')
+    
+
+def BA_avg_clustering_per_kl(l,lb):
+    list_of_graphs={}
+    for j in range(100):
+        list_of_graphs[j]=nx.read_edgelist('Data/barabasi_data/m5_'+str(l)+'_edgelist_loop_'+str(j)+'.txt')
+        
+    
+    c = defaultdict(list)
+    kmeans=[]
+   
+    for j in range(100):
+        d = defaultdict(list)
+        degrees=[]
+        degrees = [list_of_graphs[j].degree(n) for n in list_of_graphs[j].nodes()]
+        
+        kmean=Average_degree(list_of_graphs[j])
+        kmeans.append(kmean)
+        for u in list_of_graphs[j].nodes():
+               d[list_of_graphs[j].degree(u)].append(u)
+                
+        for degree in d:
+            clustering_coeff= nx.clustering(list_of_graphs[j], d[degree])
+            for i in clustering_coeff.values():
+                c[degree].append(i)
+            
+        clustering_coeff.clear()
+    cpd=[]
+    s=[]
+    for degree in c:
+        s.append(degree)
+       
+        cpd.append(np.mean(c[degree]))
+        
+    l=s/np.mean(kmeans)
+        
+    plt.scatter(l,cpd,label=lb)
+    plt.xscale('log')
+    plt.yscale('log')
+    plt.ylabel('$c(k/<k>)$')
+    plt.xlabel('$k/<k>$')
+    plt.xlim(left=10**(-1),right=10**1)
+    #plt.ylim(bottom=10**(-3),top=1)
+    #plt.rcParams.update({'font.size': 15})
+    plt.legend()
+    
+    plt.xlim(left=10**(-2),right=10**2)
+    
+
+def ER_avg_clustering_per_kl(l,lb):
+    list_of_graphs={}
+    for j in range(100):
+        list_of_graphs[j]=nx.read_edgelist('Data/erdos_data/p01_'+str(l)+'_edgelist_loop_'+str(j)+'.txt')
+        
+    
+    c = defaultdict(list)
+    kmeans=[]
+   
+    for j in range(100):
+        d = defaultdict(list)
+        degrees=[]
+        degrees = [list_of_graphs[j].degree(n) for n in list_of_graphs[j].nodes()]
+        
+        kmean=Average_degree(list_of_graphs[j])
+        kmeans.append(kmean)
+        for u in list_of_graphs[j].nodes():
+               d[list_of_graphs[j].degree(u)].append(u)
+                
+        for degree in d:
+            clustering_coeff= nx.clustering(list_of_graphs[j], d[degree])
+            for i in clustering_coeff.values():
+                c[degree].append(i)
+            
+        clustering_coeff.clear()
+    cpd=[]
+    s=[]
+    for degree in c:
+        s.append(degree)
+       
+        cpd.append(np.mean(c[degree]))
+        
+    l=s/np.mean(kmeans)
+        
+    plt.scatter(l,cpd,label=lb)
+    plt.xscale('log')
+    plt.yscale('log')
+    plt.ylabel('$c(k/<k>)$')
+    plt.xlabel('$k/<k>$')
+    plt.xlim(left=10**(-1),right=10**1)
+    #plt.ylim(bottom=10**(-3),top=1)
+    #plt.rcParams.update({'font.size': 15})
+    plt.legend()
+    
+    plt.xlim(left=10**(-2),right=10**2)
+    
+def BA_avg_clustering_per_kl_c0(l,lb):
+    list_of_graphs={}
+    for j in range(100):
+        list_of_graphs[j]=nx.read_edgelist('Data/barabasi_data/m5_'+str(l)+'_edgelist_loop_'+str(j)+'.txt')
+        
+    
+    c = defaultdict(list)
+    kmeans=[]
+    c_0_list=[]
+   
+    for j in range(100):
+        d = defaultdict(list)
+        degrees=[]
+        degrees = [list_of_graphs[j].degree(n) for n in list_of_graphs[j].nodes()]
+        
+        kmean=Average_degree(list_of_graphs[j])
+        kmeans.append(kmean)
+        c_0_list.append(c_0(list_of_graphs[j]))
+        for u in list_of_graphs[j].nodes():
+               d[list_of_graphs[j].degree(u)].append(u)
+                
+        for degree in d:
+            clustering_coeff= nx.clustering(list_of_graphs[j], d[degree])
+            for i in clustering_coeff.values():
+                c[degree].append(i)
+            
+        clustering_coeff.clear()
+    cpd=[]
+    s=[]
+    for degree in c:
+        s.append(degree)
+       
+        cpd.append(np.mean(c[degree]))
+        
+    l=s/np.mean(kmeans)
+    
+    c0mean=np.mean(c_0_list)
+        
+    plt.scatter(l,cpd/c0mean,label=lb)
+    plt.xscale('log')
+    plt.yscale('log')
+    plt.ylabel('$c(k/<k>)$')
+    plt.xlabel('$k/<k>$')
+    plt.xlim(left=10**(-1),right=10**1)
+    #plt.ylim(bottom=10**(-3),top=1)
+    #plt.rcParams.update({'font.size': 15})
+    plt.legend()
+    
+    plt.xlim(left=10**(-2),right=10**2)
+    
+
+def ER_avg_clustering_per_kl_c0(l,lb):
+    list_of_graphs={}
+    for j in range(100):
+        list_of_graphs[j]=nx.read_edgelist('Data/erdos_data/p01_'+str(l)+'_edgelist_loop_'+str(j)+'.txt')
+        
+    
+    c = defaultdict(list)
+    kmeans=[]
+    c_0_list=[]
+   
+    for j in range(100):
+        d = defaultdict(list)
+        degrees=[]
+        degrees = [list_of_graphs[j].degree(n) for n in list_of_graphs[j].nodes()]
+        
+        kmean=Average_degree(list_of_graphs[j])
+        kmeans.append(kmean)
+        c_0_list.append(c_0(list_of_graphs[j]))
+        for u in list_of_graphs[j].nodes():
+               d[list_of_graphs[j].degree(u)].append(u)
+                
+        for degree in d:
+            clustering_coeff= nx.clustering(list_of_graphs[j], d[degree])
+            for i in clustering_coeff.values():
+                c[degree].append(i)
+            
+        clustering_coeff.clear()
+    cpd=[]
+    s=[]
+    for degree in c:
+        s.append(degree)
+       
+        cpd.append(np.mean(c[degree]))
+        
+    l=s/np.mean(kmeans)
+    
+    c0mean=np.mean(c_0_list)
+        
+    plt.scatter(l,cpd/c0mean,label=lb)
+    plt.xscale('log')
+    plt.yscale('log')
+    plt.ylabel('$c(k/<k>)$')
+    plt.xlabel('$k/<k>$')
+    plt.xlim(left=10**(-1),right=10**1)
+    #plt.ylim(bottom=10**(-3),top=1)
+    #plt.rcParams.update({'font.size': 15})
+    plt.legend()
+    
+    plt.xlim(left=10**(-2),right=10**2)
+    
+
+
+def BA_avg_average_neighbor_degree_x_kl(l,lb):
+    list_of_graphs={}
+    for j in range(100):
+        list_of_graphs[j]=nx.read_edgelist('Data/barabasi_data/m5_'+str(l)+'_edgelist_loop_'+str(j)+'.txt')
+        
+    
+    knn = defaultdict(list)
+    kmeans=[]
+    k_0_list=[]
+   
+    for j in range(100):
+        d = defaultdict(list)
+        degrees=[]
+        degrees = [list_of_graphs[j].degree(n) for n in list_of_graphs[j].nodes()]
+        
+        kmean=Average_degree(list_of_graphs[j])
+        kmeans.append(kmean)
+        k_0_list.append(k_0(list_of_graphs[j]))
+        for u in list_of_graphs[j].nodes():
+               d[list_of_graphs[j].degree(u)].append(u)
+                
+        for degree in d:
+            nearest_neighbors_degree = nx.average_neighbor_degree(list_of_graphs[j], nodes=d[degree])
+            for i in nearest_neighbors_degree.values():
+                knn[degree].append(i)
+            
+        nearest_neighbors_degree.clear()
+    annd=[]
+    s=[]
+    for degree in knn:
+        s.append(degree)
+       
+        annd.append(np.mean(knn[degree]))
+        
+    l=s/np.mean(kmeans)
+    
+    k0mean=np.mean(k_0_list)
+        
+    plt.scatter(l,annd/k0mean,label=lb)
+    plt.legend()
+    plt.xscale('log')
+    plt.yscale('log')
+    plt.ylim(bottom=10**(-1),top=10)
+    plt.ylabel('$k_{nn,n}(k/<k>)$')
+    plt.xlabel('$k/<k>$')
+    
+    
+def ER_avg_average_neighbor_degree_x_kl(l,lb):
+    list_of_graphs={}
+    for j in range(100):
+        list_of_graphs[j]=nx.read_edgelist('Data/erdos_data/p01_'+str(l)+'_edgelist_loop_'+str(j)+'.txt')
+        
+    
+    knn = defaultdict(list)
+    kmeans=[]
+    k_0_list=[]
+   
+    for j in range(100):
+        d = defaultdict(list)
+        degrees=[]
+        degrees = [list_of_graphs[j].degree(n) for n in list_of_graphs[j].nodes()]
+        
+        kmean=Average_degree(list_of_graphs[j])
+        kmeans.append(kmean)
+        k_0_list.append(k_0(list_of_graphs[j]))
+        for u in list_of_graphs[j].nodes():
+               d[list_of_graphs[j].degree(u)].append(u)
+                
+        for degree in d:
+            nearest_neighbors_degree = nx.average_neighbor_degree(list_of_graphs[j], nodes=d[degree])
+            for i in nearest_neighbors_degree.values():
+                knn[degree].append(i)
+            
+        nearest_neighbors_degree.clear()
+    annd=[]
+    s=[]
+    for degree in knn:
+        s.append(degree)
+       
+        annd.append(np.mean(knn[degree]))
+        
+    l=s/np.mean(kmeans)
+    
+    k0mean=np.mean(k_0_list)
+        
+    plt.scatter(l,annd/k0mean,label=lb)
+    plt.legend()
+    plt.xscale('log')
+    plt.yscale('log')
+    plt.ylim(bottom=10**(-1),top=10)
+    plt.ylabel('$k_{nn,n}(k/<k>)$')
+    plt.xlabel('$k/<k>$')
    

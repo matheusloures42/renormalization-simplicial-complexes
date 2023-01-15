@@ -49,3 +49,19 @@ def Average_degree_weighted(G):
     degrees = [G.degree(n,weight='weight') for n in G.nodes()]
     mean=np.mean(degrees)
     return mean
+
+
+def c_0(G):
+    degrees = [G.degree(n) for n in G.nodes()]
+    kmean=Average_degree(G)
+    ksqrmean=average_degree_square(G)
+    N=G.number_of_nodes()
+    norm=(ksqrmean-kmean)**2/(float(N)*kmean**3)
+    return norm
+
+def k_0(G):
+    degrees = [G.degree(n) for n in G.nodes()]
+    kmean=Average_degree(G)
+    ksqrmean=average_degree_square(G)
+    k0=(kmean/ksqrmean)**(-1)
+    return k0
